@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Package, MapPin } from 'lucide-react';
-import { ordersAPI } from '../services/api';
+import { ArrowLeft, Package, MapPin, CreditCard, CheckCircle, Clock, XCircle } from 'lucide-react';
+import { ordersAPI, paymentsAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import './Orders.css';
 
@@ -13,10 +13,19 @@ const statusColors = {
   cancelled: 'badge-danger',
 };
 
+const paymentStatusConfig = {
+  paid: { label: 'Paid', color: '#22c55e', icon: CheckCircle },
+  pending: { label: 'Pending', color: '#f59e0b', icon: Clock },
+  unpaid: { label: 'Unpaid', color: '#6b7280', icon: Clock },
+  failed: { label: 'Failed', color: '#ef4444', icon: XCircle },
+  refunded: { label: 'Refunded', color: '#8b5cf6', icon: XCircle },
+};
+
 const OrderDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [order, setOrder] = useState(null);
+  const [payment, setPayment] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,6 +33,14 @@ const OrderDetail = () => {
       try {
         const { data } = await ordersAPI.getById(id);
         setOrder(data.order);
+
+        // Fetch payment info
+        try {
+          const paymentRes = await paymentsAPI.getByOrder(id);
+          setPayment(paymentRes.data.payment);
+        } catch {
+          // No payment record yet
+        }
       } catch (error) {
         toast.error('Order not found');
         navigate('/orders');
@@ -36,6 +53,9 @@ const OrderDetail = () => {
 
   if (loading) return <div className="loading"><div className="spinner"></div></div>;
   if (!order) return null;
+
+  const pStatus = paymentStatusConfig[order.payment_status] || paymentStatusConfig.unpaid;
+  const PaymentIcon = pStatus.icon;
 
   return (
     <div className="page">
@@ -57,6 +77,42 @@ const OrderDetail = () => {
             <span className={`order-status ${order.status}`}>
               {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
             </span>
+          </div>
+
+          {/* Payment Info */}
+          <div className="order-detail-section">
+            <h3><CreditCard size={18} /> Payment</h3>
+            <div className="payment-detail-grid">
+              <div className="payment-detail-row">
+                <span className="payment-label">Status</span>
+                <span className="payment-status-badge" style={{ color: pStatus.color }}>
+                  <PaymentIcon size={14} />
+                  {pStatus.label}
+                </span>
+              </div>
+              <div className="payment-detail-row">
+                <span className="payment-label">Method</span>
+                <span className="payment-value">
+                  {(order.payment_method || 'credit_card').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                </span>
+              </div>
+              {payment?.card_last_four && (
+                <div className="payment-detail-row">
+                  <span className="payment-label">Card</span>
+                  <span className="payment-value">
+                    {(payment.card_brand || '').charAt(0).toUpperCase() + (payment.card_brand || '').slice(1)} •••• {payment.card_last_four}
+                  </span>
+                </div>
+              )}
+              {(order.transaction_id || payment?.transaction_id) && (
+                <div className="payment-detail-row">
+                  <span className="payment-label">Transaction</span>
+                  <span className="payment-value" style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}>
+                    {(order.transaction_id || payment?.transaction_id).slice(0, 20)}...
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Shipping */}
@@ -83,11 +139,11 @@ const OrderDetail = () => {
                 <div style={{ flex: 1 }}>
                   <p style={{ fontWeight: 600, fontSize: '0.9375rem' }}>{item.product_name}</p>
                   <p style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
-                    Qty: {item.quantity} × ${parseFloat(item.price).toFixed(2)}
+                    Qty: {item.quantity} × ${parseFloat(item.product_price || item.price).toFixed(2)}
                   </p>
                 </div>
                 <span style={{ fontWeight: 700, color: 'var(--gray-900)' }}>
-                  ${(parseFloat(item.price) * item.quantity).toFixed(2)}
+                  ${parseFloat(item.subtotal || (parseFloat(item.product_price || item.price) * item.quantity)).toFixed(2)}
                 </span>
               </div>
             ))}
@@ -97,7 +153,7 @@ const OrderDetail = () => {
           <div className="order-detail-section">
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', fontWeight: 800 }}>
               <span>Total</span>
-              <span>${parseFloat(order.total_amount).toFixed(2)}</span>
+              <span>${parseFloat(order.total).toFixed(2)}</span>
             </div>
           </div>
         </div>

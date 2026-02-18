@@ -74,4 +74,12 @@ export const ordersAPI = {
   updateStatus: (id, status) => api.put(`/orders/${id}/status`, { status }),
 };
 
+// Payments API
+export const paymentsAPI = {
+  process: (data) => api.post('/payments/process', data),
+  getByOrder: (orderId) => api.get(`/payments/order/${orderId}`),
+  getAll: (params) => api.get('/payments', { params }),
+  refund: (id) => api.post(`/payments/${id}/refund`),
+};
+
 export default api;

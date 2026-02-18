@@ -85,6 +85,14 @@ const Order = {
     return result.rows[0];
   },
 
+  async updatePaymentStatus(orderId, paymentStatus, transactionId) {
+    const result = await db.query(
+      `UPDATE orders SET payment_status = $1, transaction_id = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3 RETURNING *`,
+      [paymentStatus, transactionId, orderId]
+    );
+    return result.rows[0];
+  },
+
   async findAll({ page = 1, limit = 10, status } = {}) {
     const offset = (page - 1) * limit;
     const conditions = [];

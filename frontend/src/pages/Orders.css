@@ -229,3 +229,42 @@
   .order-card-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
   .order-card-footer { flex-direction: column; gap: 0.75rem; }
 }
+
+/* Payment Detail Section */
+.payment-detail-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.payment-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--gray-50);
+}
+
+.payment-detail-row:last-child {
+  border-bottom: none;
+}
+
+.payment-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--gray-500);
+}
+
+.payment-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--gray-900);
+}
+
+.payment-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
