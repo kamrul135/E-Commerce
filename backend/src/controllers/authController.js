@@ -69,6 +69,19 @@ const authController = {
     }
   },
 
+  async getAllUsers(req, res) {
+    try {
+      if (req.user.role !== 'admin') {
+        return res.status(403).json({ error: 'Access denied.' });
+      }
+      const users = await User.findAll();
+      res.json({ users });
+    } catch (error) {
+      console.error('Users fetch error:', error);
+      res.status(500).json({ error: 'Failed to fetch users.' });
+    }
+  },
+
   async updateProfile(req, res) {
     try {
       const user = await User.update(req.user.id, req.body);

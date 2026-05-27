@@ -139,11 +139,11 @@ const OrderDetail = () => {
                 <div style={{ flex: 1 }}>
                   <p style={{ fontWeight: 600, fontSize: '0.9375rem' }}>{item.product_name}</p>
                   <p style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
-                    Qty: {item.quantity} × ${parseFloat(item.product_price || item.price).toFixed(2)}
+                    Qty: {item.quantity} × ৳{parseFloat(item.product_price || item.price).toFixed(2)}
                   </p>
                 </div>
                 <span style={{ fontWeight: 700, color: 'var(--gray-900)' }}>
-                  ${parseFloat(item.subtotal || (parseFloat(item.product_price || item.price) * item.quantity)).toFixed(2)}
+                  ৳{parseFloat(item.subtotal || (parseFloat(item.product_price || item.price) * item.quantity)).toFixed(2)}
                 </span>
               </div>
             ))}
@@ -153,7 +153,7 @@ const OrderDetail = () => {
           <div className="order-detail-section">
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', fontWeight: 800 }}>
               <span>Total</span>
-              <span>${parseFloat(order.total).toFixed(2)}</span>
+              <span>৳{parseFloat(order.total).toFixed(2)}</span>
             </div>
           </div>
         </div>

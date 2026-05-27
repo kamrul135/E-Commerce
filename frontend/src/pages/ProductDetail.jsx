@@ -55,7 +55,7 @@ const ProductDetail = () => {
           <div className="product-detail-info">
             <span className="product-detail-category">{product.category_name}</span>
             <h1>{product.name}</h1>
-            <p className="product-detail-price">${parseFloat(product.price).toFixed(2)}</p>
+            <p className="product-detail-price">৳{parseFloat(product.price).toFixed(2)}</p>
 
             <div className="product-detail-stock">
               <Package size={16} />

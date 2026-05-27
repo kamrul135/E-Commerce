@@ -49,7 +49,7 @@ const Register = () => {
     <div className="auth-page">
       <div className="auth-container">
         <h2>Create Account</h2>
-        <p className="auth-subtitle">Join ShopHub and start shopping</p>
+        <p className="auth-subtitle">Join KH Nexa and start shopping</p>        
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-row">

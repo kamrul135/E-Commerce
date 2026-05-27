@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   padding: 3rem 1rem;
-  background: linear-gradient(160deg, #ecfdf5 0%, #f0fdf4 50%, #f7fee7 100%);
+  background: linear-gradient(160deg, #eff6ff 0%, #e0f2fe 50%, #dbeafe 100%);
   position: relative;
 }
 
@@ -16,13 +16,13 @@
   right: 15%;
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
 
 .auth-container {
-  background: white;
+  background: var(--bg-card);
   padding: 3rem 2.5rem;
   border-radius: var(--radius-2xl);
   width: 100%;
@@ -83,7 +83,7 @@
 }
 
 .auth-form input:focus {
-  background: white;
+  background: var(--bg-card);
   border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--primary-100);
 }

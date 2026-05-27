@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Package, Github, Mail } from 'lucide-react';
+import { Github, Mail } from 'lucide-react';
+import BrandLogo from './BrandLogo';
 import './Footer.css';
 
 const Footer = () => {
@@ -9,8 +10,8 @@ const Footer = () => {
       <div className="container footer-container">
         <div className="footer-brand">
           <Link to="/" className="footer-logo">
-            <Package size={24} />
-            <span>ShopHub</span>
+            <BrandLogo />
+            <span className="footer-wordmark">KH Nexa</span>
           </Link>
           <p>Your one-stop shop for quality products at great prices.</p>
         </div>
@@ -31,15 +32,15 @@ const Footer = () => {
 
         <div className="footer-links">
           <h4>Contact</h4>
-          <a href="mailto:support@shophub.com">
-            <Mail size={14} /> support@shophub.com
+          <a href="mailto:support@khnexa.com">
+            <Mail size={14} /> support@khnexa.com
           </a>
         </div>
       </div>
 
       <div className="footer-bottom">
         <div className="container">
-          <p>&copy; {new Date().getFullYear()} ShopHub. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} KH Nexa. All rights reserved.</p>
         </div>
       </div>
     </footer>

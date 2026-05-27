@@ -48,7 +48,7 @@ const Cart = () => {
                   <Link to={`/products/${item.product_id}`} className="cart-item-name">
                     {item.name}
                   </Link>
-                  <p className="cart-item-price">${parseFloat(item.price).toFixed(2)}</p>
+                  <p className="cart-item-price">৳{parseFloat(item.price).toFixed(2)}</p>
                 </div>
                 <div className="cart-item-quantity">
                   <button onClick={() => updateQuantity(item.product_id, item.quantity - 1)} disabled={item.quantity <= 1}>
@@ -60,7 +60,7 @@ const Cart = () => {
                   </button>
                 </div>
                 <p className="cart-item-total">
-                  ${(parseFloat(item.price) * item.quantity).toFixed(2)}
+                  ৳{(parseFloat(item.price) * item.quantity).toFixed(2)}
                 </p>
                 <button className="cart-item-remove" onClick={() => removeFromCart(item.product_id)}>
                   <Trash2 size={18} />
@@ -77,15 +77,15 @@ const Cart = () => {
             <h3>Order Summary</h3>
             <div className="summary-row">
               <span>Subtotal</span>
-              <span>${total.toFixed(2)}</span>
+              <span>৳{total.toFixed(2)}</span>
             </div>
             <div className="summary-row">
               <span>Shipping</span>
-              <span>{total >= 50 ? 'Free' : '$5.99'}</span>
+              <span>{total >= 5000 ? 'Free' : '৳120.00'}</span>
             </div>
             <div className="summary-row summary-total">
               <span>Total</span>
-              <span>${(total >= 50 ? total : total + 5.99).toFixed(2)}</span>
+              <span>৳{(total >= 5000 ? total : total + 120).toFixed(2)}</span>
             </div>
             <button
               className="btn btn-primary btn-lg btn-block"

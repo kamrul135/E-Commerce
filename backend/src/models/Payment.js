@@ -217,6 +217,30 @@ const Payment = {
       pagination: { page, limit, total, pages: Math.ceil(total / limit) },
     };
   },
+
+  /**
+   * Get all payments (Admin only).
+   */
+  async findAll({ page = 1, limit = 50 } = {}) {
+    const offset = (page - 1) * limit;
+    const countResult = await db.query('SELECT COUNT(*) FROM payments');
+    const total = parseInt(countResult.rows[0].count, 10);
+
+    const result = await db.query(
+      `SELECT p.*, o.id as order_number, o.status as order_status, u.name as user_name
+       FROM payments p
+       LEFT JOIN orders o ON p.order_id = o.id
+       LEFT JOIN users u ON p.user_id = u.id
+       ORDER BY p.created_at DESC
+       LIMIT $1 OFFSET $2`,
+      [limit, offset]
+    );
+
+    return {
+      payments: result.rows,
+      pagination: { page, limit, total, pages: Math.ceil(total / limit) },
+    };
+  },
 };
 
 module.exports = Payment;

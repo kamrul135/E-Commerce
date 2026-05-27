@@ -28,7 +28,7 @@
   border-radius: var(--radius-lg);
   font-size: 0.875rem;
   transition: all var(--transition-fast);
-  background: white;
+  background: var(--bg-card);
 }
 
 .search-form input:focus {
@@ -46,7 +46,7 @@
   border: 1.5px solid var(--gray-200);
   border-radius: var(--radius-lg);
   font-size: 0.875rem;
-  background: white;
+  background: var(--bg-card);
   cursor: pointer;
   min-width: 170px;
   color: var(--gray-700);

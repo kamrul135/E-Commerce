@@ -56,8 +56,8 @@ const Home = () => {
         <div className="container features-grid">
           <div className="feature-card">
             <Truck size={32} />
-            <h3>Free Shipping</h3>
-            <p>Free delivery on orders over $50</p>
+            <h3>Fast & Free Delivery</h3>
+            <p>Complimentary shipping on orders above ৳5000</p>
           </div>
           <div className="feature-card">
             <Shield size={32} />

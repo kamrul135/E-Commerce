@@ -29,7 +29,15 @@ const productController = {
 
   async create(req, res) {
     try {
-      const product = await Product.create(req.body);
+      const productData = { ...req.body };
+      if (req.file) {
+        // Build the URL for the uploaded file
+        // Construct basic host URL (e.g. http://localhost:5000)
+        const host = req.protocol + '://' + req.get('host');
+        productData.image_url = `${host}/uploads/${req.file.filename}`;
+      }
+      
+      const product = await Product.create(productData);
       res.status(201).json({ message: 'Product created', product });
     } catch (error) {
       console.error('Create product error:', error);
@@ -39,7 +47,13 @@ const productController = {
 
   async update(req, res) {
     try {
-      const product = await Product.update(req.params.id, req.body);
+      const productData = { ...req.body };
+      if (req.file) {
+        const host = req.protocol + '://' + req.get('host');
+        productData.image_url = `${host}/uploads/${req.file.filename}`;
+      }
+
+      const product = await Product.update(req.params.id, productData);
       if (!product) return res.status(404).json({ error: 'Product not found.' });
       res.json({ message: 'Product updated', product });
     } catch (error) {

@@ -19,6 +19,7 @@ router.post('/login', [
 
 router.get('/profile', authenticate, authController.getProfile);
 router.put('/profile', authenticate, authController.updateProfile);
+router.get('/users', authenticate, authController.getAllUsers);
 
 router.put('/password', authenticate, [
   body('currentPassword').notEmpty().withMessage('Current password is required'),

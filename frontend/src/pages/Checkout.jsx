@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CreditCard, ArrowLeft, ArrowRight, Truck, Lock, CheckCircle, DollarSign, Wallet } from 'lucide-react';
+import { CreditCard, ArrowLeft, ArrowRight, Truck, Lock, CheckCircle, Smartphone, Wallet } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { ordersAPI } from '../services/api';
 import toast from 'react-hot-toast';
+import bdLocations from '../utils/bdLocations';
 import './Checkout.css';
 
 const PAYMENT_METHODS = [
-  { id: 'credit_card', label: 'Credit Card', icon: CreditCard },
-  { id: 'debit_card', label: 'Debit Card', icon: Wallet },
-  { id: 'paypal', label: 'PayPal', icon: DollarSign },
+  { id: 'mobile_banking', label: 'Mobile Banking', icon: Smartphone },
+  { id: 'credit_card', label: 'Credit / Debit Card', icon: CreditCard },
   { id: 'cod', label: 'Cash on Delivery', icon: Truck },
 ];
 
@@ -58,21 +58,39 @@ const Checkout = () => {
     shipping_address: '',
     shipping_city: '',
     shipping_state: '',
+    shipping_upazila: '',
     shipping_zip: '',
-    shipping_country: 'US',
+    shipping_country: 'BD',
   });
 
-  const [paymentMethod, setPaymentMethod] = useState('credit_card');
+  const [paymentMethod, setPaymentMethod] = useState('mobile_banking');
   const [cardData, setCardData] = useState({
     card_name: '',
     card_number: '',
     card_expiry: '',
     card_cvv: '',
   });
+  const [mobileBankingData, setMobileBankingData] = useState({
+    provider: 'bkash',
+    account_number: '',
+    trx_id: ''
+  });
+
   const [cardErrors, setCardErrors] = useState({});
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === 'shipping_state') {
+      setFormData({ ...formData, shipping_state: value, shipping_city: '', shipping_upazila: '' });
+    } else if (name === 'shipping_city') {
+      setFormData({ ...formData, shipping_city: value, shipping_upazila: '' });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  const handleMobileBankingChange = (e) => {
+    setMobileBankingData({ ...mobileBankingData, [e.target.name]: e.target.value });
   };
 
   const handleCardChange = (e) => {
@@ -120,14 +138,14 @@ const Checkout = () => {
     e.preventDefault();
 
     // Validate card if paying by card
-    const isCardPayment = paymentMethod === 'credit_card' || paymentMethod === 'debit_card';
+    const isCardPayment = paymentMethod === 'credit_card';
     if (isCardPayment && !validateCard()) return;
 
     setLoading(true);
     try {
       const orderData = {
         shipping_address: formData.shipping_address,
-        shipping_city: `${formData.shipping_city}${formData.shipping_state ? ', ' + formData.shipping_state : ''}`,
+        shipping_city: `${formData.shipping_upazila}, ${formData.shipping_city}, ${formData.shipping_state}`,
         shipping_postal_code: formData.shipping_zip,
         shipping_country: formData.shipping_country,
         payment_method: paymentMethod,
@@ -160,10 +178,25 @@ const Checkout = () => {
     return null;
   }
 
-  const shipping = total >= 50 ? 0 : 5.99;
+  const getShippingCharge = () => {
+    if (total >= 5000) return 0;
+    if (!formData.shipping_state || !formData.shipping_city) return 0;
+    if (formData.shipping_city === 'Dhaka') return 60; // Inside Dhaka Core
+    if (formData.shipping_state === 'Dhaka') return 80; // Dhaka Suburbs (Gazipur, Narayanganj, etc)
+    return 120; // Outside Dhaka / Other Divisions
+  };
+
+  const getShippingLabel = () => {
+    if (!formData.shipping_state || !formData.shipping_city) return 'Delivery Charge';
+    if (formData.shipping_city === 'Dhaka') return 'Delivery Charge (Inside Dhaka)';
+    if (formData.shipping_state === 'Dhaka') return 'Delivery Charge (Dhaka Suburbs)';
+    return 'Delivery Charge (Outside Dhaka)';
+  };
+
+  const shipping = getShippingCharge();
   const grandTotal = total + shipping;
   const cardBrand = detectCardBrand(cardData.card_number);
-  const isCardPayment = paymentMethod === 'credit_card' || paymentMethod === 'debit_card';
+  const isCardPayment = paymentMethod === 'credit_card';
 
   return (
     <div className="page">
@@ -203,60 +236,86 @@ const Checkout = () => {
                     name="shipping_address"
                     value={formData.shipping_address}
                     onChange={handleChange}
-                    placeholder="123 Main Street"
+                    placeholder="House 12, Road 5, Dhanmondi"
                     required
                   />
                 </div>
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="shipping_city">City</label>
-                    <input
-                      id="shipping_city"
-                      name="shipping_city"
-                      value={formData.shipping_city}
-                      onChange={handleChange}
-                      placeholder="New York"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="shipping_state">State</label>
-                    <input
+                    <label htmlFor="shipping_state">Division</label>
+                    <select
                       id="shipping_state"
                       name="shipping_state"
                       value={formData.shipping_state}
                       onChange={handleChange}
-                      placeholder="NY"
+                      required
+                    >
+                      <option value="" disabled>Select Division</option>
+                      {Object.keys(bdLocations).map(division => (
+                        <option key={division} value={division}>{division}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="shipping_city">City / District</label>
+                    <select
+                      id="shipping_city"
+                      name="shipping_city"
+                      value={formData.shipping_city}
+                      onChange={handleChange}
+                      required
+                      disabled={!formData.shipping_state}
+                    >
+                      <option value="" disabled>Select City / District</option>
+                      {formData.shipping_state && Object.keys(bdLocations[formData.shipping_state]).map(city => (
+                        <option key={city} value={city}>{city}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="shipping_upazila">Upazila / Area</label>
+                    <select
+                      id="shipping_upazila"
+                      name="shipping_upazila"
+                      value={formData.shipping_upazila}
+                      onChange={handleChange}
+                      required
+                      disabled={!formData.shipping_city}
+                    >
+                      <option value="" disabled>Select Upazila / Area</option>
+                      {formData.shipping_city && bdLocations[formData.shipping_state][formData.shipping_city]?.map(area => (
+                        <option key={area} value={area}>{area}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="shipping_zip">Postal / ZIP Code</label>
+                    <input
+                      id="shipping_zip"
+                      name="shipping_zip"
+                      value={formData.shipping_zip}
+                      onChange={handleChange}
+                      placeholder="1205"
                       required
                     />
                   </div>
                 </div>
 
                 <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="shipping_zip">ZIP Code</label>
-                    <input
-                      id="shipping_zip"
-                      name="shipping_zip"
-                      value={formData.shipping_zip}
-                      onChange={handleChange}
-                      placeholder="10001"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
+                  <div className="form-group" style={{ maxWidth: '50%' }}>
                     <label htmlFor="shipping_country">Country</label>
                     <select
                       id="shipping_country"
                       name="shipping_country"
                       value={formData.shipping_country}
                       onChange={handleChange}
+                      disabled
                     >
-                      <option value="US">United States</option>
-                      <option value="CA">Canada</option>
-                      <option value="UK">United Kingdom</option>
-                      <option value="AU">Australia</option>
+                      <option value="BD">Bangladesh</option>
                     </select>
                   </div>
                 </div>
@@ -367,12 +426,50 @@ const Checkout = () => {
                 </div>
               )}
 
-              {/* PayPal */}
-              {paymentMethod === 'paypal' && (
-                <div className="checkout-section paypal-section">
-                  <div className="paypal-info">
-                    <DollarSign size={32} />
-                    <p>You will be redirected to complete payment via PayPal after placing your order.</p>
+              {/* Mobile Banking Options */}
+              {paymentMethod === 'mobile_banking' && (
+                <div className="checkout-section">
+                  <div className="mobile-banking-selector" style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem', padding: '1rem', background: 'var(--gray-50)', borderRadius: '8px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                      <input type="radio" name="provider" value="bkash" checked={mobileBankingData.provider === 'bkash'} onChange={handleMobileBankingChange} /> 
+                      <span style={{ fontWeight: '600', color: '#e2136e' }}>bKash</span>
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                      <input type="radio" name="provider" value="nagad" checked={mobileBankingData.provider === 'nagad'} onChange={handleMobileBankingChange} /> 
+                      <span style={{ fontWeight: '600', color: '#f7931e' }}>Nagad</span>
+                    </label>
+                  </div>
+
+                  <div className="mobile-banking-info" style={{ marginBottom: '1.5rem', background: 'var(--gray-50)', padding: '1rem', borderRadius: '8px' }}>
+                    <Smartphone size={32} style={{ color: mobileBankingData.provider === 'bkash' ? '#e2136e' : '#f7931e', marginBottom: '0.5rem' }} />
+                    <p><strong>Step 1:</strong> Send <strong>৳{grandTotal.toFixed(2)}</strong> to our {mobileBankingData.provider === 'bkash' ? 'bKash' : 'Nagad'} Merchant Number <strong>01608418807</strong></p>
+                    <p><strong>Step 2:</strong> Enter your account number and Transaction ID (TrxID) below to verify your payment.</p>
+                  </div>
+                  
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="account_number">Your {mobileBankingData.provider === 'bkash' ? 'bKash' : 'Nagad'} Number</label>
+                      <input
+                        id="account_number"
+                        name="account_number"
+                        value={mobileBankingData.account_number}
+                        onChange={handleMobileBankingChange}
+                        placeholder="01XXXXXXXXX"
+                        required
+                        inputMode="numeric"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="trx_id">Transaction ID (TrxID)</label>
+                      <input
+                        id="trx_id"
+                        name="trx_id"
+                        value={mobileBankingData.trx_id}
+                        onChange={handleMobileBankingChange}
+                        placeholder="8X7A9B2C4D"
+                        required
+                      />
+                    </div>
                   </div>
                 </div>
               )}
@@ -392,7 +489,7 @@ const Checkout = () => {
 
               <button type="submit" className="btn btn-primary btn-lg btn-block pay-btn" disabled={loading}>
                 <Lock size={16} />
-                {loading ? 'Processing Payment...' : `Pay $${grandTotal.toFixed(2)}`}
+                {loading ? 'Processing Payment...' : `Pay ৳${grandTotal.toFixed(2)}`}
               </button>
 
               <p className="checkout-disclaimer">
@@ -412,21 +509,21 @@ const Checkout = () => {
                     <p className="checkout-item-name">{item.name}</p>
                     <p className="checkout-item-qty">Qty: {item.quantity}</p>
                   </div>
-                  <span>${(parseFloat(item.price) * item.quantity).toFixed(2)}</span>
+                  <span>৳{(parseFloat(item.price) * item.quantity).toFixed(2)}</span>
                 </div>
               ))}
             </div>
             <div className="summary-row">
               <span>Subtotal</span>
-              <span>${total.toFixed(2)}</span>
+              <span>৳{total.toFixed(2)}</span>
             </div>
             <div className="summary-row">
-              <span>Shipping</span>
-              <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+              <span>{getShippingLabel()}</span>
+              <span>{shipping === 0 && total >= 5000 ? 'Free' : (formData.shipping_city ? `৳${shipping.toFixed(2)}` : 'Calculated at next step')}</span>
             </div>
             <div className="summary-row summary-total">
               <span>Total</span>
-              <span>${grandTotal.toFixed(2)}</span>
+              <span>৳{grandTotal.toFixed(2)}</span>
             </div>
           </div>
         </div>

@@ -74,7 +74,7 @@ const Orders = () => {
               <div className="order-card-body">
                 <div className="order-info">
                   <span>Items: {order.item_count}</span>
-                  <span className="order-total">${parseFloat(order.total_amount).toFixed(2)}</span>
+                  <span className="order-total">৳{parseFloat(order.total_amount).toFixed(2)}</span>
                 </div>
                 <Link to={`/orders/${order.id}`} className="btn btn-outline btn-sm">
                   <Eye size={16} /> View Details

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="KH Nexa logo">
+  <defs>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f5f7fa" />
+      <stop offset="0.45" stop-color="#c6cbd2" />
+      <stop offset="1" stop-color="#8f97a1" />
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#70a5ff" />
+      <stop offset="1" stop-color="#1f56d6" />
+    </linearGradient>
+  </defs>
+
+  <rect width="240" height="240" rx="28" fill="#0e1b69" />
+
+  <path d="M52 44v152h20v-53l46 53h26l-58-66 56-86h-25l-45 70V44z" fill="url(#metal)" />
+  <path d="M157 44h20v64h33V44h20v152h-20v-67h-33v67h-20z" fill="url(#metal)" />
+
+  <path d="M132 176h63" stroke="url(#glow)" stroke-width="8" stroke-linecap="round" />
+  <circle cx="198" cy="176" r="10" fill="#dce7ff" stroke="url(#glow)" stroke-width="4" />
+  <circle cx="130" cy="176" r="4" fill="#9ec0ff" />
+</svg>

@@ -2,7 +2,7 @@
 
 /* Hero Section */
 .hero {
-  background: linear-gradient(160deg, #ecfdf5 0%, #d1fae5 30%, #f0fdf4 70%, #f7fee7 100%);
+  background: linear-gradient(160deg, #eff6ff 0%, #dbeafe 30%, #e0f2fe 70%, #bfdbfe 100%);
   padding: 5rem 0 4rem;
   position: relative;
   overflow: hidden;
@@ -16,7 +16,7 @@
   width: 500px;
   height: 500px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -28,7 +28,7 @@
   width: 350px;
   height: 350px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(5, 150, 105, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(29, 78, 216, 0.06) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -86,7 +86,7 @@
 /* Features Section */
 .features {
   padding: 3.5rem 0;
-  background: white;
+  background: var(--bg-card);
   border-bottom: 1px solid var(--gray-100);
 }
 
@@ -170,7 +170,7 @@
 }
 
 .category-card {
-  background: white;
+  background: var(--bg-card);
   padding: 1.75rem 1.25rem;
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
@@ -266,7 +266,7 @@
 }
 
 .cta .btn-primary {
-  background: white;
+  background: var(--bg-card);
   color: var(--primary-dark);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }

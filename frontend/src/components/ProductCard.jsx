@@ -28,7 +28,7 @@ const ProductCard = ({ product }) => {
         <p className="product-card-category">{product.category_name}</p>
         <h3 className="product-card-title">{product.name}</h3>
         <div className="product-card-footer">
-          <span className="product-card-price">${parseFloat(product.price).toFixed(2)}</span>
+          <span className="product-card-price">৳{parseFloat(product.price).toFixed(2)}</span>
           <button
             className="btn btn-primary btn-sm"
             onClick={handleAddToCart}

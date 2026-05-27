@@ -88,16 +88,26 @@ const paymentController = {
   },
 
   /**
-   * Get user's payment history.
+   * Get user's payment history or all payments if admin.
    * GET /api/payments
    */
   async getPayments(req, res) {
     try {
       const { page, limit } = req.query;
-      const result = await Payment.findByUserId(req.user.id, {
-        page: parseInt(page, 10) || 1,
-        limit: parseInt(limit, 10) || 10,
-      });
+      
+      let result;
+      if (req.user.role === 'admin') {
+        result = await Payment.findAll({
+          page: parseInt(page, 10) || 1,
+          limit: parseInt(limit, 10) || 50,
+        });
+      } else {
+        result = await Payment.findByUserId(req.user.id, {
+          page: parseInt(page, 10) || 1,
+          limit: parseInt(limit, 10) || 10,
+        });
+      }
+      
       res.json(result);
     } catch (error) {
       console.error('Get payments error:', error);

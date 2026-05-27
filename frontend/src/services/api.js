@@ -41,14 +41,19 @@ export const authAPI = {
   getProfile: () => api.get('/auth/profile'),
   updateProfile: (data) => api.put('/auth/profile', data),
   changePassword: (data) => api.put('/auth/password', data),
+  getAllUsers: () => api.get('/auth/users'),
 };
 
 // Products API
 export const productsAPI = {
   getAll: (params) => api.get('/products', { params }),
   getById: (id) => api.get(`/products/${id}`),
-  create: (data) => api.post('/products', data),
-  update: (id, data) => api.put(`/products/${id}`, data),
+  create: (data) => api.post('/products', data, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  update: (id, data) => api.put(`/products/${id}`, data, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
   delete: (id) => api.delete(`/products/${id}`),
 };
 
@@ -80,6 +85,18 @@ export const paymentsAPI = {
   getByOrder: (orderId) => api.get(`/payments/order/${orderId}`),
   getAll: (params) => api.get('/payments', { params }),
   refund: (id) => api.post(`/payments/${id}/refund`),
+};
+
+// Withdrawals API
+export const withdrawalsAPI = {
+  getAll: () => api.get('/withdrawals'),
+  create: (data) => api.post('/withdrawals', data),
+  updateStatus: (id, status) => api.put(`/withdrawals/${id}/status`, { status }),
+};
+
+// Analytics API
+export const analyticsAPI = {
+  getDashboardStats: () => api.get('/analytics'),
 };
 
 export default api;

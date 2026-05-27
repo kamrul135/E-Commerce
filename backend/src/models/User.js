@@ -24,6 +24,20 @@ const User = {
     return result.rows[0];
   },
 
+  async findAll() {
+    const result = await db.query(
+      `SELECT 
+        u.id, u.name, u.email, u.role, u.phone, u.created_at, 
+        COUNT(o.id) as total_orders, 
+        SUM(o.total_amount) as total_spent
+       FROM users u
+       LEFT JOIN orders o ON u.id = o.user_id
+       GROUP BY u.id
+       ORDER BY u.created_at DESC`
+    );
+    return result.rows;
+  },
+
   async update(id, fields) {
     const allowedFields = ['name', 'address', 'city', 'postal_code', 'country', 'phone'];
     const updates = [];

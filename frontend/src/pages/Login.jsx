@@ -70,16 +70,16 @@ const Login = () => {
           <button type="submit" className="btn btn-primary btn-lg btn-block" disabled={loading}>
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
+          
+          <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+            <Link to="/forgot-password" style={{ fontSize: '0.875rem', color: 'var(--primary)', textDecoration: 'none', fontWeight: '600' }}>
+              Forgot password?
+            </Link>
+          </div>
         </form>
 
         <div className="auth-footer">
           Don't have an account? <Link to="/register">Sign up</Link>
-        </div>
-
-        <div className="auth-demo" style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.75rem', color: 'var(--gray-400)' }}>
-          <p style={{ marginBottom: '0.25rem' }}>Demo accounts:</p>
-          <small style={{ display: 'block' }}>Admin: admin@example.com / admin123</small>
-          <small style={{ display: 'block' }}>Customer: john@example.com / customer123</small>
         </div>
       </div>
     </div>

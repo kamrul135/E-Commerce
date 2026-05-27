@@ -7,7 +7,7 @@
 }
 
 .profile-sidebar {
-  background: white;
+  background: var(--bg-card);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-card);
   border: 1px solid rgba(0, 0, 0, 0.04);
@@ -86,7 +86,7 @@
 
 /* Profile Content */
 .profile-content {
-  background: white;
+  background: var(--bg-card);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-card);
   border: 1px solid rgba(0, 0, 0, 0.04);
@@ -125,7 +125,7 @@
 }
 
 .profile-form input:focus {
-  background: white;
+  background: var(--bg-card);
   border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--primary-100);
 }

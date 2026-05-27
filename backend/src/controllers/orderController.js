@@ -40,6 +40,18 @@ const orderController = {
       }
 
       const fullOrder = await Order.findById(order.id);
+      
+      // Emit socket notification
+      if (req.app.locals.io) {
+        req.app.locals.io.emit('new_notification', {
+          id: Date.now(),
+          title: `New order #${order.id}`,
+          message: `Order received for $${total}`,
+          time: new Date().toISOString(),
+          type: 'order'
+        });
+      }
+
       res.status(201).json({
         message: paymentResult.status === 'pending'
           ? 'Order placed! Payment will be collected on delivery.'

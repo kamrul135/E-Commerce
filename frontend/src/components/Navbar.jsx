@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, LogOut, Menu, X, Package, Shield } from 'lucide-react';
+import { ShoppingCart, User, LogOut, Menu, X, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import BrandLogo from './BrandLogo';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -21,8 +22,8 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="container navbar-container">
         <Link to="/" className="navbar-brand">
-          <Package size={28} />
-          <span>ShopHub</span>
+          <BrandLogo />
+          <span className="brand-wordmark">KH Nexa</span>
         </Link>
 
         <div className={`navbar-menu ${menuOpen ? 'active' : ''}`}>

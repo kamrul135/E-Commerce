@@ -67,7 +67,7 @@
 }
 
 .checkout-form {
-  background: white;
+  background: var(--bg-card);
   padding: 2.5rem;
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-card);
@@ -133,7 +133,7 @@
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  background: white;
+  background: var(--bg-card);
   border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--primary-100);
 }
@@ -177,7 +177,7 @@
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: all 0.2s ease;
-  background: white;
+  background: var(--bg-card);
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--gray-600);
@@ -302,7 +302,7 @@
 
 /* ===== Order Summary Sidebar ===== */
 .checkout-summary {
-  background: white;
+  background: var(--bg-card);
   padding: 2rem;
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
